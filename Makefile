@@ -22,14 +22,8 @@ rpm_version=$(shell grep "Version:" $(spec) | sed -e "s/Version://g" -e "s/[ \t]
 mirror_conf_url=https://raw.github.com/italiangrid/build-settings/master/maven/cnaf-mirror-settings.xml
 mirror_conf_name=mirror-settings.xml
 
-# directory where jar deps will be searched for
-libs_dir=
-
-# name of the jar files which make the dependencies
-jar_names=
-
 # maven build options
-mvn_settings=-s $(mirror_conf_name) -Dvoms-clients.libs=$(libs_dir)
+mvn_settings=-s $(mirror_conf_name)
 
 .PHONY: clean rpm
 
