@@ -1,76 +1,49 @@
-# 
-# RPM spec file for the StoRM BackEnd server.
-#
-# Copyright (c) 2008 INFN 
-# AUTHORS: Magnoni Luca, Ronchieri Elisabetta
-# 
-# You may copy, modify and distribute this file under the same
-# terms as the StoRM BackEnd itself.
-#
-#
 
-%define debug_package %{nil}  # no debug package (not useful with Java)
-
-### Package Naming 
+%global pom_version @@POM_VERSION@@
+%global mvn_settings @@MVN_SETTINGS@@
 
 %define _modulename backend-server
-
 %define prefixname storm
 %define longname   storm-backend-server
 %define default_user root
 
-%define version @version@
-%define age @age@
-%define os_acronim @os_acronim@
-%define swig @swig@
-%define jdk @jdk@
-%define lcmaps @lcmaps@
-%define lcmaps_without_gsi @lcmaps_without_gsi@
-%define lcmaps_plugins_basic @lcmaps_plugins_basic@
-%define lcmaps_plugins_voms @lcmaps_plugins_voms@
-%define libacl_devel @libacl_devel@
-%define libattr_devel @libattr_devel@
-
 Name:    %{longname}
-Version: %{version}
-Release: %{age}.%{os_acronim}
-Summary: The StoRM BackEnd component.
-License:  Apache License
-Url: http://storm.forge.cnaf.infn.it
-Vendor: EMI
-Group: Applications/File
-Packager: Elisabetta Ronchieri <storm-support@lists.infn.it> 
-AutoReqProv:    yes
-BuildRoot: %{_tmppath}/%{name}
-Source:    %{name}-%{version}.tar.gz
-Summary:   The StoRM BackEnd server.
+Version: 1.11
+Release: 1%{?dist}
+Summary: The StoRM backend server
 
-#Added to make the mock build work
-BuildRequires: ant
-BuildRequires: swig
-BuildRequires: e2fsprogs-devel
-BuildRequires: libattr-devel
-BuildRequires: libacl-devel
-BuildRequires: java-devel
-BuildRequires: lcmaps-interface
-BuildRequires: lcmaps-without-gsi-devel
+Group: Applications/File
+License:  ASL 2.0
+Url: https://github.com/italiangrid/storm
+Source:    %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}
+
+BuildArch: noarch
+
+BuildRequires: maven
+BuildRequires: jpackage-utils
+BuildRequires: java-1.6.0-openjdk-devel
 
 Requires(post):   chkconfig
 Requires(preun):  chkconfig
 Requires(preun):  initscripts
 Requires(postun): initscripts
 
+Requires: java-1.6.0-openjdk
 Requires: mysql
 Requires: mysql-server
-Requires: lcmaps
-Requires: lcmaps-interface
-Requires: lcmaps-without-gsi
-Requires: lcmaps-plugins-basic
-Requires: lcmaps-plugins-voms
-Requires: java
 Requires: nc
 Requires: xml-commons-apis
 Requires: mysql-connector-java
+Requires: jpackage-utils
+
+%description
+StoRM provides an SRM interface to any POSIX filesystem with direct file
+access ("file:" transport protocol), but can take advantage of special
+features of high performance parallel and cluster file systems, as GPFS from 
+IBM and Lustre from SUN. 
+
+This package contains the StoRM backend server.
 
 %define _datadir               /usr/share
 %define _sysconfdir            /etc
@@ -78,21 +51,45 @@ Requires: mysql-connector-java
 %define _javadir               %{_datadir}/java
 %define _varlog                /var/log
 
-### Package Description
-
-%description
-This package contains the StoRM BackEnd server.
-
-StoRM provides an SRM interface to any POSIX filesystem with direct file
-access ("file:" transport protocol), but can take advantage of special
-features of high performance parallel and cluster file systems, as GPFS from 
-IBM and Lustre from SUN.
-
 %prep
 %setup -q -n %{name}
 
 %build
-ant -Dswig.location="%{swig}" -Djdk.location="%{jdk}" -Dlcmaps.location="%{lcmaps}" -Dlcmaps-without-gsi.location="%{lcmaps_without_gsi}" -Dlcmaps-plugins-basic.location="%{lcmaps_plugins_basic}" -Dlcmaps-plugins-voms.location="%{lcmaps_plugins_voms}" -Dlibacl-devel.location=%{libacl_devel} -Dlibattr-devel.location="%{libattr_devel}" -Dversion="%{version}" -Dage="%{age}" -Dplatform.acronym="%{os_acronim}" build
+mvn @@MVN_SETTINGS@@ -DskipTests -U package
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT
+tar -C $RPM_BUILD_ROOT -xvzf target/%{name}.tar.gz
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,%{default_user},%{default_user})
+
+%dir %{_javadir}/%{longname}
+%{_javadir}/%{longname}/*.jar
+
+%dir %attr(755,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}
+%attr(750,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_database_config.sh
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_tbl.sql
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/lcmaps.db
+%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/logging.xml
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace-1.5.0.xsd
+%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace.xml
+%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/path-authz.db
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/storm.properties.template
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/used-space.ini.template
+%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/welcome.txt
+
+%config(noreplace) %attr(644,%{default_user},%{default_user}) %{_sysconfdir}/logrotate.d/%{longname}
+%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/sysconfig/%{longname}
+%attr(755,%{default_user},%{default_user}) %{_sysconfdir}/init.d/%{longname}
+
+%dir %{_varlog}/%{prefixname}
 
 %pre
 TMP_FOLDER=%{_sysconfdir}/%{prefixname}/tmp/storm_permissions_mantainance
@@ -128,15 +125,6 @@ if [ -d %{_varlog}/%{prefixname} ] ; then
     echo "unset STORM_LOG_OWNNER_GROUP" >> ${TMP_FOLDER}/unset_vars
   fi
 fi
-
-%install
-rm -rf $RPM_BUILD_ROOT
-ant -Dswig.location="%{swig}" -Djdk.location="%{jdk}" -Dlcmaps.location="%{lcmaps}" -Dlcmaps-without-gsi.location="%{lcmaps_without_gsi}" -Dlcmaps-plugins-basic.location="%{lcmaps_plugins_basic}" -Dlcmaps-plugins-voms.location="%{lcmaps_plugins_voms}" -Dlibacl-devel.location=%{libacl_devel} -Dlibattr-devel.location="%{libattr_devel}" -Dversion="%{version}" -Dage="%{age}" -Dplatform.acronym="%{os_acronim}" -Dprefix="$RPM_BUILD_ROOT" install
-echo $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/init.d
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-mkdir -p $RPM_BUILD_ROOT%{_varlog}/%{prefixname}
 
 %post
 #during an install, the value of the argument passed in is 1
@@ -239,113 +227,6 @@ fi;
 ##if [ "$1" = "0" ] ; then
 ##elif [ "$1" = "1" ] ; then
 ##fi;
-
-%files
-%defattr(-,%{default_user},%{default_user})
-
-%dir %{_datadir}/doc/%{name}-%{version} 
-%{_datadir}/doc/%{name}-%{version}/CREDITS
-%{_datadir}/doc/%{name}-%{version}/RELEASE-NOTES.txt
-%{_datadir}/doc/%{name}-%{version}/LICENSE.txt
-%{_datadir}/doc/%{name}-%{version}/ACKNOWLEDGEMENTS.txt
-
-%dir %{_libdir}/%{longname}
-%{_libdir}/%{longname}/libposixapi_interface.so
-%{_libdir}/%{longname}/libgpfsapi_interface.so
-%{_libdir}/%{longname}/libstorm_cutil.so
-%{_libdir}/%{longname}/libstorm_lcmaps.so
-
-%dir %{_javadir}/%{longname}
-%{_javadir}/%{longname}/storm-backend-server.jar
-
-%dir %attr(755,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}
-%attr(750,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_database_config.sh
-%config(noreplace) %attr(644,%{default_user},%{default_user}) %{_sysconfdir}/logrotate.d/%{longname}
-%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/sysconfig/%{longname}
-%attr(755,%{default_user},%{default_user}) %{_sysconfdir}/init.d/%{longname}
-
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_tbl.sql
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/lcmaps.db
-%attr(640,%{default_user},%{default_user}) %config(noreplace) %{_sysconfdir}/%{prefixname}/%{_modulename}/logging.xml
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace-1.5.0.xsd
-%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace.xml
-%config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/path-authz.db
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/storm.properties.template
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/used-space.ini.template
-%attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/welcome.txt
-
-# empty directories; nonetheless include in RPM
-%dir %{_varlog}/%{prefixname}
-
-%{_javadir}/%{longname}/activation.jar
-%{_javadir}/%{longname}/asm-3.1.jar
-%{_javadir}/%{longname}/axis.jar
-%{_javadir}/%{longname}/axis-schema.jar
-%{_javadir}/%{longname}/cog-axis.jar
-%{_javadir}/%{longname}/cog-jglobus.jar
-%{_javadir}/%{longname}/cog-jobmanager.jar
-%{_javadir}/%{longname}/cog-url.jar
-%{_javadir}/%{longname}/commons-collections-3.1.jar
-%{_javadir}/%{longname}/commons-configuration-1.4.jar
-%{_javadir}/%{longname}/commons-logging-1.1.jar
-%{_javadir}/%{longname}/commons-dbcp-1.2.1.jar
-%{_javadir}/%{longname}/commons-cli-1.0.jar
-%{_javadir}/%{longname}/commons-codec-1.3.jar
-%{_javadir}/%{longname}/commons-validator-1.3.0.jar
-%{_javadir}/%{longname}/commons-beanutils.jar
-%{_javadir}/%{longname}/commons-lang-2.3.jar
-%{_javadir}/%{longname}/commons-io-2.0.1.jar
-%{_javadir}/%{longname}/commons-digester-1.7.jar
-%{_javadir}/%{longname}/commons-pool-1.2.jar
-%{_javadir}/%{longname}/commons-discovery-0.2.jar
-%{_javadir}/%{longname}/cryptix-asn1.jar
-%{_javadir}/%{longname}/cryptix32.jar
-%{_javadir}/%{longname}/dom.jar
-%{_javadir}/%{longname}/grizzly-webserver-1.9.15b.jar
-%{_javadir}/%{longname}/ini4j-0.5.2.jar
-%{_javadir}/%{longname}/jce-jdk13-131.jar
-%{_javadir}/%{longname}/jgss.jar
-%{_javadir}/%{longname}/jaxrpc.jar
-%{_javadir}/%{longname}/jakarta-oro-2.0.8.jar
-%{_javadir}/%{longname}/jersey-core-1.1.0-ea.jar
-%{_javadir}/%{longname}/jersey-server-1.1.0-ea.jar
-%{_javadir}/%{longname}/jettison-1.1.jar
-%{_javadir}/%{longname}/jna.jar
-%{_javadir}/%{longname}/jsr311-api-1.1.jar
-%{_javadir}/%{longname}/json-20080701.jar
-%{_javadir}/%{longname}/log4j-1.2.13.jar
-%{_javadir}/%{longname}/logback-classic-0.9.15.jar
-%{_javadir}/%{longname}/logback-core-0.9.15.jar
-%{_javadir}/%{longname}/mail.jar
-%{_javadir}/%{longname}/netty-3.5.0.Final.jar
-%{_javadir}/%{longname}/puretls.jar
-%{_javadir}/%{longname}/saaj.jar
-%{_javadir}/%{longname}/srm22client.jar
-%{_javadir}/%{longname}/slf4j-api-1.5.6.jar
-%{_javadir}/%{longname}/stax-api-1.0-2.jar
-%{_javadir}/%{longname}/ws-commons-util-1.0.1.jar
-%{_javadir}/%{longname}/wsdl4j-1.5.1.jar
-%{_javadir}/%{longname}/xmlrpc-server-3.0.jar
-%{_javadir}/%{longname}/xml-apis.jar
-%{_javadir}/%{longname}/xmlrpc-common-3.0.jar
-%{_javadir}/%{longname}/xalan.jar
-%{_javadir}/%{longname}/xercesImpl.jar
-
-%dir %{_javadir}/%{longname}/doc
-%{_javadir}/%{longname}/doc/puretls.LICENSE
-%{_javadir}/%{longname}/doc/junit.LICENSE
-%{_javadir}/%{longname}/doc/bouncycastle.LICENSE
-%{_javadir}/%{longname}/doc/commons-logging.LICENSE
-%{_javadir}/%{longname}/doc/cog.LICENSE
-%{_javadir}/%{longname}/doc/cryptix.LICENSE
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-### Package ChangeLog
 
 %changelog
 * Fri Jun 24 2011 <Riccardo, Elisabetta and Michele> 1.7.2-2.sl5
