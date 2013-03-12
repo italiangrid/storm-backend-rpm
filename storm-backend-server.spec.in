@@ -72,6 +72,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadir}/%{longname}/*.jar
 
 %dir %attr(755,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}
+
 %attr(750,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_database_config.sh
 %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
 %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
@@ -84,7 +85,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/storm.properties.template
 %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/used-space.ini.template
 %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/%{prefixname}/%{_modulename}/welcome.txt
-
 %config(noreplace) %attr(644,%{default_user},%{default_user}) %{_sysconfdir}/logrotate.d/%{longname}
 %config(noreplace) %attr(640,%{default_user},%{default_user}) %{_sysconfdir}/sysconfig/%{longname}
 %attr(755,%{default_user},%{default_user}) %{_sysconfdir}/init.d/%{longname}
@@ -196,37 +196,23 @@ fi
 
 
 %preun
-#during an upgrade, the value of the argument passed in is 1
-#during an uninstall, the value of the argument passed in is 0
+# when uninstalling
 if [ "$1" = "0" ] ; then
-  echo 'stop service'
   /sbin/service %{longname} stop >/dev/null 2>&1 || :
-  echo 'del service from chkconfig'
   /sbin/chkconfig --del %{longname}
   
-  #remove files from folders belonging to the rpm
-  echo 'remove generated file'
-  rm -f %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace.xml.*
-  rm -f %{_sysconfdir}/%{prefixname}/%{_modulename}/storm.properties
-
   #remove symbolic link
   echo 'remove mysql symbolic link'
   /bin/unlink %{_javadir}/%{longname}/mysql-connector-java.jar
 fi;
+
+# when upgrading
 if [ "$1" = "1" ] ; then
   echo "The StoRM BackEnd server has been upgraded but NOT configured yet.
-You need to use yaim to configure the server.
-"
-  echo 'stop service'
+You need to use yaim to configure the server."
   /sbin/service %{longname} stop >/dev/null 2>&1 || :
 fi;
 
-%postun
-#during an upgrade, the value of the argument passed in is 1
-#during an uninstall, the value of the argument passed in is 0
-##if [ "$1" = "0" ] ; then
-##elif [ "$1" = "1" ] ; then
-##fi;
 
 %changelog
 * Fri Jun 24 2011 <Riccardo, Elisabetta and Michele> 1.7.2-2.sl5
