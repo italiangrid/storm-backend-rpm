@@ -24,7 +24,7 @@ mirror_conf_name=mirror-settings.xml
 
 # maven build options
 mvn_settings=-s $(mirror_conf_name)
-build_number=""
+build_number=%{nil}
 
 .PHONY: clean rpm
 
