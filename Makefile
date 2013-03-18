@@ -49,8 +49,8 @@ prepare-sources: sanity-checks clean
 prepare-spec: prepare-sources
 	sed -e 's#@@MVN_SETTINGS@@#$(mvn_settings)#g' \
     	-e 's#@@POM_VERSION@@#$(pom_version)#g' \
-		-e 's#@@JAR_NAMES@@#$(jar_names)#g' \
-		$(spec_src) > $(spec)
+	-e 's#@@BUILD_NUMBER@@#$(build_number)#g' \
+	$(spec_src) > $(spec)
 
 rpm: prepare-spec
 	mkdir -p $(rpmbuild_dir)/BUILD \
