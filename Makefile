@@ -24,6 +24,7 @@ mirror_conf_name=mirror-settings.xml
 
 # maven build options
 mvn_settings=-s $(mirror_conf_name)
+build_number=""
 
 .PHONY: clean rpm
 
@@ -58,11 +59,7 @@ rpm: prepare-spec
 		$(rpmbuild_dir)/SPECS \
 		$(rpmbuild_dir)/SRPMS
 	cp $(source_dir)/$(name).tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(rpm_version).tar.gz
-ifndef build_number
-	rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" --define "dist $(dist)"
-else
 	rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" --define "dist $(dist)" --define "build_number $(build_number)"
-endif
 
 clean:
 	rm -rf $(source_dir) $(rpmbuild_dir) $(spec)
