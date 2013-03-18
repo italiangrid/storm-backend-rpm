@@ -1,5 +1,14 @@
+%global base_version 1.11
+
 %global pom_version @@POM_VERSION@@
 %global mvn_settings @@MVN_SETTINGS@@
+
+
+%if %{?build_number:1}%{!?build_number:0}
+%define package_version %{base_version}.build%{build_number}
+%else
+%define package_version %{base_version}
+%endif
 
 
 %define _modulename backend-server
@@ -9,14 +18,14 @@
 
 
 Name:    %{longname}
-Version: 1.11%{?build_number}
+Version: %{package_version}
 Release: 1%{?dist}
 Summary: The StoRM backend server
 
 Group: Applications/File
 License:  ASL 2.0
 Url: https://github.com/italiangrid/storm
-Source:    %{name}-%{version}.tar.gz
+Source:    %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}
 
 BuildArch: noarch

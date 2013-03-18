@@ -1,6 +1,6 @@
 name=storm-backend-server
 
-tag=master
+tag=moving_to_mvn
 
 # the voms-clients repo on GitHub
 git=https://github.com/italiangrid/storm.git
@@ -16,7 +16,7 @@ dist=.sl6
 
 # determine the pom version and the rpm version
 pom_version=$(shell grep "<version>" $(source_dir)/$(name)/pom.xml | head -1 | sed -e 's/<version>//g' -e 's/<\/version>//g' -e "s/[ \t]*//g")
-rpm_version=$(shell grep "Version:" $(spec) | sed -e "s/Version://g" -e "s/[ \t]*//g")
+#rpm_version=$(shell grep "base_version" $(spec) | head -1 | sed -e 's/%global base_version//g' -e 's/[ \t]*//g')
 
 # settings file for mvn
 mirror_conf_url=https://raw.github.com/italiangrid/build-settings/master/maven/cnaf-mirror-settings.xml
@@ -24,7 +24,6 @@ mirror_conf_name=mirror-settings.xml
 
 # maven build options
 mvn_settings=-s $(mirror_conf_name)
-build_number=%{nil}
 
 .PHONY: clean rpm
 
@@ -58,8 +57,13 @@ rpm: prepare-spec
 		$(rpmbuild_dir)/SOURCES \
 		$(rpmbuild_dir)/SPECS \
 		$(rpmbuild_dir)/SRPMS
-	cp $(source_dir)/$(name).tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(rpm_version).tar.gz
+	echo $(rpm_version); exit  
+	cp $(source_dir)/$(name).tar.gz $(rpmbuild_dir)/SOURCES
+ifndef build_number
+	rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" --define "dist $(dist)"
+else
 	rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" --define "dist $(dist)" --define "build_number $(build_number)"
+endif
 
 clean:
 	rm -rf $(source_dir) $(rpmbuild_dir) $(spec)
