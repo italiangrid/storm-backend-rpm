@@ -49,7 +49,6 @@ prepare-sources: sanity-checks clean
 prepare-spec: prepare-sources
 	sed -e 's#@@MVN_SETTINGS@@#$(mvn_settings)#g' \
     	-e 's#@@POM_VERSION@@#$(pom_version)#g' \
-	-e 's#@@BUILD_NUMBER@@#$(build_number)#g' \
 	$(spec_src) > $(spec)
 
 rpm: prepare-spec
@@ -59,7 +58,11 @@ rpm: prepare-spec
 		$(rpmbuild_dir)/SPECS \
 		$(rpmbuild_dir)/SRPMS
 	cp $(source_dir)/$(name).tar.gz $(rpmbuild_dir)/SOURCES/$(name)-$(rpm_version).tar.gz
+ifndef build_number
 	rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" --define "dist $(dist)"
+else
+	rpmbuild --nodeps -v -ba $(spec) --define "_topdir $(rpmbuild_dir)" --define "dist $(dist)" --define "build_number $(build_number)"
+endif
 
 clean:
 	rm -rf $(source_dir) $(rpmbuild_dir) $(spec)
