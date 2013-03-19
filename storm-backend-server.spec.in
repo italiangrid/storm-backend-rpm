@@ -46,6 +46,10 @@ Requires: nc
 Requires: xml-commons-apis
 Requires: mysql-connector-java
 Requires: jpackage-utils
+Requires: storm-native-libs
+Requires: storm-native-libs-lcmaps
+Requires: storm-native-libs-java
+
 
 %description
 StoRM provides an SRM interface to any POSIX filesystem with direct file
