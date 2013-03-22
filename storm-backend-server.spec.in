@@ -1,6 +1,6 @@
-%global base_version 1.11
+%global base_version 1.11.1
 
-%global pom_version 1.11
+%global pom_version 1.11.1
 %global mvn_settings -s mirror-settings.xml
 
 
