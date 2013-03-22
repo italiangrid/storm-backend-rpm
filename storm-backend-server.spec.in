@@ -13,10 +13,9 @@
 
 %define _modulename backend-server
 %define prefixname storm
-%define longname   storm-backend-server
 
 
-Name:    %{longname}
+Name:    storm-backend-server
 Version: %{package_version}
 Release: 1%{?dist}
 Summary: The StoRM backend server
@@ -77,8 +76,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 
-%dir %{_javadir}/%{longname}
-%{_javadir}/%{longname}/*.jar
+%dir %{_javadir}/%{name}
+%{_javadir}/%{name}/*.jar
 
 %attr(755,root,root) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_database_config.sh
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
@@ -92,9 +91,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{prefixname}/%{_modulename}/storm.properties.template
 %{_sysconfdir}/%{prefixname}/%{_modulename}/used-space.ini.template
 %{_sysconfdir}/%{prefixname}/%{_modulename}/welcome.txt
-%config(noreplace) %{_sysconfdir}/logrotate.d/%{longname}
-%config(noreplace) %{_sysconfdir}/sysconfig/%{longname}
-%attr(755,root,root) %{_sysconfdir}/init.d/%{longname}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%attr(755,root,root) %{_sysconfdir}/init.d/%{name}
 
 %dir %{_localstatedir}/log/%{prefixname}
 
@@ -103,41 +102,37 @@ rm -rf $RPM_BUILD_ROOT
 # when installing
 if [ "$1" = "1" ] ; then
   # add the service to chk
-  /sbin/chkconfig --add %{longname}
+  /sbin/chkconfig --add %{name}
   # create mysql-connector-java jar link
-  /bin/ln -sf /usr/share/java/mysql-connector-java.jar %{_javadir}/%{longname}/mysql-connector-java.jar
+  /bin/ln -sf /usr/share/java/mysql-connector-java.jar %{_javadir}/%{name}/mysql-connector-java.jar
 # when upgrading
 elif [ "$1" = "2" ] ; then
-	
   # create mysql-connector-java jar link if it does not exist
-  if [ ! -L %{_javadir}/%{longname}/mysql-connector-java.jar ] ; then
-    /bin/ln -sf /usr/share/java/mysql-connector-java.jar %{_javadir}/%{longname}/mysql-connector-java.jar
+  if [ ! -L %{_javadir}/%{name}/mysql-connector-java.jar ] ; then
+    /bin/ln -sf /usr/share/java/mysql-connector-java.jar %{_javadir}/%{name}/mysql-connector-java.jar
   fi
-	
   # remove old mysql-connector-java jar link
-  if [ -L %{_javadir}/%{longname}/mysql-connector-java-5.1.12.jar ] ; then
-    /bin/unlink %{_javadir}/%{longname}/mysql-connector-java-5.1.12.jar
+  if [ -L %{_javadir}/%{name}/mysql-connector-java-5.1.12.jar ] ; then
+    /bin/unlink %{_javadir}/%{name}/mysql-connector-java-5.1.12.jar
   fi    
-  
   # start the service
-  /sbin/service %{longname} start >/dev/null 2>&1 || :
+  /sbin/service %{name} start >/dev/null 2>&1 || :
 fi;
 
 %preun
 # when uninstalling
 if [ "$1" = "0" ] ; then
   # stop the service
-  /sbin/service %{longname} stop >/dev/null 2>&1 || :
+  /sbin/service %{name} stop >/dev/null 2>&1 || :
   # remove the service from chk
-  /sbin/chkconfig --del %{longname}
+  /sbin/chkconfig --del %{name}
   # remove mysql-connector-java jar link
-  /bin/unlink %{_javadir}/%{longname}/mysql-connector-java.jar
+  /bin/unlink %{_javadir}/%{name}/mysql-connector-java.jar
 fi;
-
 # when upgrading
 if [ "$1" = "1" ] ; then
   # stop the service
-  /sbin/service %{longname} stop >/dev/null 2>&1 || :
+  /sbin/service %{name} stop >/dev/null 2>&1 || :
 fi;
 
 %changelog
