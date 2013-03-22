@@ -80,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_javadir}/%{longname}
 %{_javadir}/%{longname}/*.jar
 
-%attr(755,-,-) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_database_config.sh
+%attr(755,root,root) %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_database_config.sh
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_tbl.sql
@@ -94,7 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{prefixname}/%{_modulename}/welcome.txt
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{longname}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{longname}
-%attr(755,-,-) %{_sysconfdir}/init.d/%{longname}
+%attr(755,root,root) %{_sysconfdir}/init.d/%{longname}
 
 %dir %{_localstatedir}/log/%{prefixname}
 
