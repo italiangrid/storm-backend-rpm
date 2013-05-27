@@ -12,7 +12,7 @@ rpmbuild_dir=$(shell pwd)/rpmbuild
 # spec file and it src
 spec_src=$(name).spec.in
 spec=$(name).spec
-dist=.sl6
+dist=.el6
 
 # determine the pom version and the rpm version
 pom_version=$(shell grep "<version>" $(source_dir)/$(name)/pom.xml | head -1 | sed -e 's/<version>//g' -e 's/<\/version>//g' -e "s/[ \t]*//g")
