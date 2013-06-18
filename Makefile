@@ -1,6 +1,6 @@
 name=storm-backend-server
 
-tag=moving_to_mvn
+tag=1.11.x
 
 # the voms-clients repo on GitHub
 git=https://github.com/italiangrid/storm.git

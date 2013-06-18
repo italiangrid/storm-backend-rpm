@@ -1,6 +1,6 @@
-%global base_version 1.11.1
+%global base_version 1.11.2
 
-%global pom_version 1.11.1
+%global pom_version 1.11.2
 %global mvn_settings -s mirror-settings.xml
 
 
@@ -131,3 +131,5 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
+* Wed Jun 12 2013 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.2-1
+- Integrated native libs interface v. 1.0.1
