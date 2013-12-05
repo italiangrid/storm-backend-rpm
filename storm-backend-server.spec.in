@@ -1,6 +1,6 @@
 %global base_version 1.11.3
 
-%global pom_version 1.11.3-SNAPSHOT
+%global pom_version 1.11.3
 %global mvn_settings -s mirror-settings.xml
 
 
@@ -17,7 +17,7 @@
 
 Name:    storm-backend-server
 Version: %{package_version}
-Release: 0%{?dist}
+Release: 1%{?dist}
 Summary: The StoRM backend server
 
 Group: Applications/File
@@ -131,7 +131,7 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
-* Wed Oct 30 2013 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.3-0
+* Wed Oct 30 2013 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.3-1
 - Fix for https://issues.infn.it/jira/browse/STOR-341
 - Fix for https://issues.infn.it/jira/browse/STOR-342
 - Fix for https://issues.infn.it/jira/browse/STOR-344
