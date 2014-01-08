@@ -1,6 +1,6 @@
 name=storm-backend-server
 
-tag=1.11.x
+tag=master
 
 # the voms-clients repo on GitHub
 git=https://github.com/italiangrid/storm.git
