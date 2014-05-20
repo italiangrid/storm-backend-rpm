@@ -17,7 +17,7 @@
 
 Name:    storm-backend-server
 Version: %{package_version}
-Release: 0%{?dist}
+Release: 1%{?dist}
 Summary: The StoRM backend server
 
 Group: Applications/File
@@ -131,8 +131,8 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
-* Tue Jan 14 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.4-0
-- Fix for https://issues.infn.it/jira/browse/STOR-501
+* Tue Jan 14 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.4-1
+- Bumped packaging version for 1.11.4 release.
 
 * Wed Oct 30 2013 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.3-1
 - Fix for https://issues.infn.it/jira/browse/STOR-341
