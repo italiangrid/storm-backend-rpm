@@ -1,3 +1,6 @@
+## Turn off meaningless jar repackaging (works only on SL6)
+%define __jar_repack 0
+
 %global base_version 1.11.5
 
 %global pom_version 1.11.5
