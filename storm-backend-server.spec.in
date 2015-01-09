@@ -1,6 +1,9 @@
-%global base_version 1.11.4
+## Turn off meaningless jar repackaging (works only on SL6)
+%define __jar_repack 0
 
-%global pom_version 1.11.4
+%global base_version 1.11.5
+
+%global pom_version 1.11.5
 %global mvn_settings -s mirror-settings.xml
 
 
@@ -28,7 +31,7 @@ BuildRoot: %{_tmppath}/%{name}
 
 BuildArch: noarch
 
-BuildRequires: maven
+BuildRequires: apache-maven
 BuildRequires: jpackage-utils
 BuildRequires: java-1.6.0-openjdk-devel
 
@@ -44,10 +47,9 @@ Requires: nc
 Requires: xml-commons-apis
 Requires: mysql-connector-java
 Requires: jpackage-utils
-Requires: storm-native-libs
-Requires: storm-native-libs-lcmaps
-Requires: storm-native-libs-java
-
+Requires: storm-native-libs >= 1.0.2
+Requires: storm-native-libs-lcmaps >= 1.0.2
+Requires: storm-native-libs-java >= 1.0.2
 
 %description
 StoRM provides an SRM interface to any POSIX filesystem with direct file
@@ -131,6 +133,9 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
+* Tue Jan 14 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.5-1
+- Bumped packaging version for 1.11.5 release.
+
 * Tue Jan 14 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.4-1
 - Bumped packaging version for 1.11.4 release.
 
