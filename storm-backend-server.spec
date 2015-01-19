@@ -25,7 +25,7 @@ BuildRoot: %{_tmppath}/%{name}
 
 BuildArch: noarch
 
-BuildRequires: maven
+BuildRequires: apache-maven
 BuildRequires: jpackage-utils
 BuildRequires: java-1.6.0-openjdk-devel
 
