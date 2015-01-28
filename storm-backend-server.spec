@@ -79,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_tbl.sql
+%{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_update_from_1.7.0_to_1.7.1.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/lcmaps.db
 %config(noreplace) %{_sysconfdir}/%{prefixname}/%{_modulename}/logging.xml
 %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace-1.5.0.xsd
