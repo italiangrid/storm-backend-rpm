@@ -1,26 +1,20 @@
 ## Turn off meaningless jar repackaging (works only on SL6)
 %define __jar_repack 0
 
-%global base_version 1.11.5
-
-%global pom_version 1.11.5
-%global mvn_settings -s mirror-settings.xml
-
+%global release_version 1
 
 %if %{?build_number:1}%{!?build_number:0}
-%define package_version %{base_version}.build%{build_number}
+%define release_ 0.build%{build_number}%{?dist}
 %else
-%define package_version %{base_version}
+%define release_  %{release_version}%{?dist}
 %endif
-
 
 %define _modulename backend-server
 %define prefixname storm
 
-
 Name:    storm-backend-server
-Version: %{package_version}
-Release: 1%{?dist}
+Version: 1.11.7
+Release: %{release_}
 Summary: The StoRM backend server
 
 Group: Applications/File
@@ -64,7 +58,7 @@ This package contains the StoRM backend server.
 %setup -q -n %{name}
 
 %build
-mvn -s mirror-settings.xml -DskipTests -U package
+mvn -s mirror-settings.xml -DskipTests -U clean package
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -85,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_be_ISAM_mysql_update_from_1.0.0_to_1.1.0.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_tbl.sql
+%{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_update_from_1.7.0_to_1.7.1.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/lcmaps.db
 %config(noreplace) %{_sysconfdir}/%{prefixname}/%{_modulename}/logging.xml
 %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace-1.5.0.xsd
@@ -133,6 +128,12 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
+* Tue Jan 29 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.7-1
+- Bumped packaging version for 1.11.7 release.
+
+* Tue Jan 19 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.6-1
+- Bumped packaging version for 1.11.6 release.
+
 * Tue Jan 14 2014 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.5-1
 - Bumped packaging version for 1.11.5 release.
 

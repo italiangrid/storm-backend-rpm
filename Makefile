@@ -10,20 +10,13 @@ source_dir=sources
 rpmbuild_dir=$(shell pwd)/rpmbuild
 
 # spec file and it src
-spec_src=$(name).spec.in
 spec=$(name).spec
 dist=.el6
-
-# determine the pom version and the rpm version
-pom_version=$(shell grep "<version>" $(source_dir)/$(name)/pom.xml | head -1 | sed -e 's/<version>//g' -e 's/<\/version>//g' -e "s/[ \t]*//g")
-#rpm_version=$(shell grep "base_version" $(spec) | head -1 | sed -e 's/%global base_version//g' -e 's/[ \t]*//g')
 
 # settings file for mvn
 mirror_conf_url=https://raw.github.com/italiangrid/build-settings/master/maven/cnaf-mirror-settings.xml
 mirror_conf_name=mirror-settings.xml
 
-# maven build options
-mvn_settings=-s $(mirror_conf_name)
 
 .PHONY: clean rpm
 
@@ -46,12 +39,7 @@ prepare-sources: sanity-checks clean
 	cd $(source_dir) && tar -r -f $(name)/$(name).tar $(name)/$(mirror_conf_name) && gzip $(name)/$(name).tar
 	cp $(source_dir)/$(name)/$(name).tar.gz $(source_dir)/$(name).tar.gz
 
-prepare-spec: prepare-sources
-	sed -e 's#@@MVN_SETTINGS@@#$(mvn_settings)#g' \
-    	-e 's#@@POM_VERSION@@#$(pom_version)#g' \
-	$(spec_src) > $(spec)
-
-rpm: prepare-spec
+rpm: prepare-sources
 	mkdir -p $(rpmbuild_dir)/BUILD \
 		$(rpmbuild_dir)/RPMS \
 		$(rpmbuild_dir)/SOURCES \
@@ -66,7 +54,7 @@ else
 endif
 
 clean:
-	rm -rf $(source_dir) $(rpmbuild_dir) $(spec)
+	rm -rf $(source_dir) $(rpmbuild_dir) 
 
 sanity-checks:
 ifndef tag
