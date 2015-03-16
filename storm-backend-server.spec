@@ -13,7 +13,7 @@
 %define prefixname storm
 
 Name:    storm-backend-server
-Version: 1.11.7
+Version: 1.11.8
 Release: %{release_}
 Summary: The StoRM backend server
 
@@ -80,6 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_grant.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_tbl.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_update_from_1.7.0_to_1.7.1.sql
+%{_sysconfdir}/%{prefixname}/%{_modulename}/db/storm_mysql_update_from_1.7.1_to_1.7.2.sql
 %{_sysconfdir}/%{prefixname}/%{_modulename}/lcmaps.db
 %config(noreplace) %{_sysconfdir}/%{prefixname}/%{_modulename}/logging.xml
 %{_sysconfdir}/%{prefixname}/%{_modulename}/namespace-1.5.0.xsd
@@ -128,6 +129,9 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
+* Fri Mar 13 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.8-1
+- Bumped packaging version for 1.11.8 release.
+
 * Tue Jan 29 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.7-1
 - Bumped packaging version for 1.11.7 release.
 
