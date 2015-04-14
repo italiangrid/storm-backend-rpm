@@ -13,7 +13,7 @@
 %define prefixname storm
 
 Name:    storm-backend-server
-Version: 1.11.8
+Version: 1.11.9
 Release: %{release_}
 Summary: The StoRM backend server
 
