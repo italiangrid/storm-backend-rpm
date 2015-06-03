@@ -129,6 +129,9 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
+* Wed Jun 3 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.9-1
+- Bumped packaging version for 1.11.9 release.
+
 * Fri Mar 13 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.8-1
 - Bumped packaging version for 1.11.8 release.
 
