@@ -13,7 +13,7 @@
 %define prefixname storm
 
 Name:    storm-backend-server
-Version: 1.11.9
+Version: 1.11.10
 Release: %{release_}
 Summary: The StoRM backend server
 
@@ -129,6 +129,9 @@ if [ "$1" = "0" ] ; then
 fi;
 
 %changelog
+* Fri Dec 18 2015 Enrico Vianello <enrico.vianello at cnaf.infn.it> - 1.11.10-1
+- Bumped packaging version for 1.11.10 release.
+
 * Wed Jun 3 2015 Andrea Ceccanti <andrea.ceccanti at cnaf.infn.it> - 1.11.9-1
 - Bumped packaging version for 1.11.9 release.
 
